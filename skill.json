@@ -34,9 +34,37 @@
                         "{number} sides",
                         "{number} side"
                     ]
+                },
+                {
+                    "name": "RollIntent",
+                    "slots": [
+                        {
+                            "name": "rolloption",
+                            "type": "ROLL_OPTIONS"
+                        }
+                    ],
+                    "samples": [
+                        "{rolloption}"
+                    ]
                 }
             ],
-            "types": []
+            "types": [
+                {
+                    "name": "ROLL_OPTIONS",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "yes"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "no"
+                            }
+                        }
+                    ]
+                }
+            ]
         }
     }
 }
