@@ -64,8 +64,8 @@ def number_handler(handler_input):
 
     handler_input.response_builder.speak(results.speech).ask(results.reprompt)
     return handler_input.response_builder.response
-    
-   
+
+
 @sb.request_handler(can_handle_func=is_intent_name("AMAZON.FallbackIntent"))
 def fallback_handler(handler_input):
     speech = f"The {skill_name} skill can't help you with that."
