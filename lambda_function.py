@@ -66,6 +66,40 @@ def number_handler(handler_input):
     return handler_input.response_builder.response
 
 
+@sb.request_handler(can_handle_func=is_intent_name("RollIntent"))
+def number_handler(handler_input):
+    print("RollIntent")
+    slots = handler_input.request_envelope.request.intent.slots
+    session_attributes = handler_input.attributes_manager.session_attributes
+
+    if quantity_key in session_attributes:
+        dice_quantity = session_attributes[quantity_key]
+        if sides_key in session_attributes:
+            roll_option = slots[roll_slot].value
+            if roll_option == "yes":
+                dice_list = roll_dice(dice_quantity, session_attributes[sides_key])
+                session_attributes[dice_key] = dice_list
+                results = LambdaResults(
+                    speech=f"You rolled {dice_list}. Would you like to roll again?",
+                    reprompt=roll_help_text
+                )
+            else:
+                results = LambdaResults(speech="OK, let me know when you are ready.", reprompt=roll_help_text)
+        else:
+            results = LambdaResults(
+                speech=f"How many sides would you like the {quantity_to_speech(dice_quantity)} to have?",
+                reprompt=sides_help_text
+            )
+    else:
+        results = LambdaResults(
+            speech=quantity_help_text,
+            reprompt=quantity_help_text
+        )
+
+    handler_input.response_builder.speak(results.speech).ask(results.reprompt)
+    return handler_input.response_builder.response
+
+
 @sb.request_handler(can_handle_func=is_intent_name("AMAZON.FallbackIntent"))
 def fallback_handler(handler_input):
     speech = f"The {skill_name} skill can't help you with that."
@@ -94,7 +128,7 @@ def log_response(_, response):
 
 @sb.global_request_interceptor()
 def log_request(handler_input):
-    print(f"Alexa Request: {handler_input.request_envelope.request}\n")
+    print(f"Alexa Request: {handler_input.request_envelope}\n")
 
 
 @sb.exception_handler(can_handle_func=lambda i, e: True)
